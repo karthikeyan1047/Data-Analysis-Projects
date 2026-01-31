@@ -1,11 +1,15 @@
 import pandas as pd
+import os
 
-customers = pd.read_excel("customers.xlsx",  sheet_name = 'Customers', parse_dates=["signup_date"])
-regions = pd.read_excel("regions.xlsx", sheet_name = 'Regions')
-products = pd.read_excel("products.xlsx", sheet_name = 'Products')
-orders = pd.read_excel("orders.xlsx", sheet_name = 'Orders', parse_dates=["order_date"])
-order_items = pd.read_excel("order_items.xlsx", sheet_name = 'Order_Items')
-payments = pd.read_excel("payments.xlsx", sheet_name = 'Payments', parse_dates=["payment_date"])
+main_folder = os.path.dirname(__file__)
+datasets_path = os.path.join(main_folder, "Datasets")
+
+customers = pd.read_excel(rf"{datasets_path}\customers.xlsx",  sheet_name = 'Customers', parse_dates=["signup_date"])
+regions = pd.read_excel(rf"{datasets_path}\regions.xlsx", sheet_name = 'Regions')
+products = pd.read_excel(rf"{datasets_path}\products.xlsx", sheet_name = 'Products')
+orders = pd.read_excel(rf"{datasets_path}\orders.xlsx", sheet_name = 'Orders', parse_dates=["order_date"])
+order_items = pd.read_excel(rf"{datasets_path}\order_items.xlsx", sheet_name = 'Order_Items')
+payments = pd.read_excel(rf"{datasets_path}\payments.xlsx", sheet_name = 'Payments', parse_dates=["payment_date"])
 
 sales_df = (
     order_items
@@ -136,7 +140,7 @@ sales_df["age_group"] = pd.cut(
 
 aov_by_age = (
     sales_df
-    .groupby("age_group", as_index=False)
+    .groupby("age_group", as_index=False, observed=True)
     .agg(avg_order_value=("net_sales", "mean"))
 )
 
